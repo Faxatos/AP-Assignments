@@ -7,6 +7,6 @@ package com.mycompany.theeightpuzzle;
 public class TheEightPuzzle {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+         new EightBoard();
     }
 }

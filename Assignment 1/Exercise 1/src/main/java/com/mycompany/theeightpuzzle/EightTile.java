@@ -3,44 +3,63 @@ package com.mycompany.theeightpuzzle;
 import javax.swing.JButton;
 import javax.swing.Timer;
 import java.awt.Color;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeSupport;
 import java.beans.VetoableChangeListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Faxy
  */
-public class EightTile extends JButton{
+public class EightTile extends JButton implements PropertyChangeListener{
     
     // Private properties for Position and Label
     private final int position; // Constant value set at startup
     private int label;          // Current label of the tile
-     private final int holeLabel = 9; // Label of empty hole tile.
+    
+    private static int HOLE_LABEL = 9; // Label of empty hole tile.
 
     // Support for bound and constrained properties
-    private PropertyChangeSupport pcs;
-    private VetoableChangeSupport vcs;
+    private final PropertyChangeSupport pcs;
+    private final VetoableChangeSupport vcs;
     
-    // Default constructor
+    // List of adjacent tiles
+    private List<EightTile> adjacentTiles = new ArrayList<>();
+    
+    /**
+     * Default constructor for EightTile.
+     */
     public EightTile() {
         super();
-        this.position=-1;
+        this.position = -1;
+        this.pcs = null;
+        this.vcs = null;
     }
     
-    // Constructor
+    /** 
+     * Constructor
+     * @param position
+     * @param label
+     */
     public EightTile(int position, int label) {
-        if(!isValid(position) || !isValid(label)) //params validity check
+        if(!isValid(position) || !isValid(label)) // Parameters validity check
             throw new IllegalArgumentException();
         
         this.position = position;
         this.label = label;
 
-        // Initialize property change support
-        pcs = new PropertyChangeSupport(this);
-        vcs = new VetoableChangeSupport(this);
+        // Initialize property and vetoable change support
+        this.pcs = new PropertyChangeSupport(this);
+        this.vcs = new VetoableChangeSupport(this);
+        
+        // Add a click listener
+        this.addActionListener(e -> handleClick());
 
         // Inizialize the tile apparence
         updateAppearance();
@@ -58,58 +77,76 @@ public class EightTile extends JButton{
     }
 
     public void setLabel(int newLabel){
+        //int oldLabel = this.label;
+        
         this.label = newLabel;
+        
+        // Notify listeners about the change // TODO: check if necessary
+        //pcs.firePropertyChange("label", oldLabel, newLabel);
 
         // Update the visual appearance of the tile
         updateAppearance();
     }
-
+    
     // Add property change listener
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(listener);
+        if(this.pcs != null){
+            this.pcs.addPropertyChangeListener(listener);
+        }
     }
 
     // Add vetoable change listener
     @Override
     public void addVetoableChangeListener(VetoableChangeListener listener) {
-        vcs.addVetoableChangeListener(listener);
+        if(this.pcs != null){
+            this.vcs.addVetoableChangeListener(listener);
+        }
     }
     
     // Method to update the appearance of the tile
     private void updateAppearance() {
         // Set the text based on the label
-        if (label == holeLabel) {
-            setText("");
-            setBackground(Color.GRAY); // Hole
-        } else {
-            setText(String.valueOf(label));
-            if (position == label) {
-                setBackground(Color.GREEN); // Correct position
-            } else {
-                setBackground(Color.YELLOW); // Incorrect position
-            }
-        }
+        setText(label == HOLE_LABEL ? "" : String.valueOf(label));
+        // Set the color based on label and position
+        setBackground(label == HOLE_LABEL ? Color.GRAY : (label == position ? Color.GREEN : Color.YELLOW));
     }
     
     // Method to handle the tile click event
     public void handleClick() {
-        try { // Validate if the move is legal (not vetoed)
+        try {
             int oldLabel = this.label;
             
-             // Attempt to change the label (to the hole)
-            vcs.fireVetoableChange("label", oldLabel, holeLabel);
-            this.label = holeLabel;
-            pcs.firePropertyChange("label", oldLabel, holeLabel);
+             // Check if the move is legal
+            vcs.fireVetoableChange("moveCheck", oldLabel, HOLE_LABEL);
+            this.label = HOLE_LABEL;
+            // If it is, fire a property change event to notify listeners (adjacent tiles) to update the hole
+            pcs.firePropertyChange("labelChange", oldLabel, HOLE_LABEL);
 
-            // If successful, update the appearance
+            // And update the appearance of the clicked tile
             updateAppearance();
         } catch (PropertyVetoException e) { // If the move is vetoed (illegal move)
             flashRed(); //flash the tile
         } catch (NumberFormatException e){
             System.out.println(e);
+        } 
+    }
+    
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if ("labelChange".equals(evt.getPropertyName()) && label == HOLE_LABEL) {
+            int newLabel = (int) evt.getOldValue();
+            //System.out.println("changing lable for " + newLabel); //DEBUG print
+            setLabel(newLabel);
         }
-        
+    }
+    
+    // Subscribe adjacent tiles to listen for property changes
+    public void setAdjacentTiles(List<EightTile> adjacentTiles) {
+        this.adjacentTiles = adjacentTiles;
+        for (EightTile tile : adjacentTiles) {
+            this.addPropertyChangeListener(tile::propertyChange);
+        }
     }
     
     // Flash the tile red for half a second if move is vetoed
