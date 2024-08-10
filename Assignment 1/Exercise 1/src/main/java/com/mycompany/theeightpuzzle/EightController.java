@@ -1,6 +1,7 @@
 package com.mycompany.theeightpuzzle;
 
 import javax.swing.JLabel;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
@@ -47,6 +48,13 @@ public class EightController extends JLabel implements VetoableChangeListener, P
             // If the move is valid set text to "OK"
             setText("OK");
             holePosition = tile.getPosition(); // The hole moves to the tile's position
+        }
+        if ("flip".equals(evt.getPropertyName())) {
+            if (holePosition != 9) {
+                setText("NOT ALLOWED");
+                throw new PropertyVetoException("Flip not allowed unless hole is in position 9.", evt);
+            }
+            setText("FLIPPED");
         }
     }
     

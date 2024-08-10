@@ -2,7 +2,9 @@ package com.mycompany.theeightpuzzle;
 
 import javax.swing.JButton;
 import javax.swing.Timer;
+
 import java.awt.Color;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
@@ -122,14 +124,13 @@ public class EightTile extends JButton implements PropertyChangeListener{
             updateAppearance();
         } catch (PropertyVetoException e) { // If the move is vetoed (illegal move)
             flashRed(); //flash the tile
-        } catch (NumberFormatException e){
-            System.out.println(e);
-        } 
+            //System.out.println(e.getMessage());
+        }
     }
     
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (label == HOLE_LABEL && "labelChange".equals(evt.getPropertyName())) {
+        if (this.label == HOLE_LABEL && "labelChange".equals(evt.getPropertyName())) {
             int newLabel = (int) evt.getOldValue();
             //System.out.println("changing lable for " + newLabel); //DEBUG print
             setLabel(newLabel);
@@ -137,7 +138,16 @@ public class EightTile extends JButton implements PropertyChangeListener{
         else if ("restart".equals(evt.getPropertyName())){
             List<Integer> randomLabels = (List<Integer>) evt.getNewValue();
             // Update the label based on the tile's position
-            setLabel(randomLabels.get(position - 1));
+            setLabel(randomLabels.get(this.position - 1));
+        }
+        else if ((this.position == 1 || this.position == 2) && "flip".equals(evt.getPropertyName())) {
+            if (this.position == 1) {
+                // NewValue = right label value of the following call: pcs.firePropertyChange("flip", label1, label2)
+                setLabel((int) evt.getNewValue());
+            } else if (this.position == 2) {
+                // OldValue = left label value of the following call: pcs.firePropertyChange("flip", label1, label2);
+                setLabel((int) evt.getOldValue());
+            }
         }
     }
     

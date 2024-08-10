@@ -3,13 +3,16 @@ package com.mycompany.theeightpuzzle;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import java.beans.PropertyChangeSupport;
+import java.beans.VetoableChangeSupport;
+import java.beans.PropertyVetoException;
 
 import java.util.Collections;
 import java.util.ArrayList;
@@ -27,17 +30,25 @@ public class EightBoard extends JFrame {
     private final JButton flipButton;
     
     private final PropertyChangeSupport pcs;
+    private final VetoableChangeSupport vcs;
     
     public EightBoard() {
+        
+        /*  
+        // Uncomment these (along with the main() method at the bottom of the file) 
+        // to make EightBoard a stand-alone executable board
+        
         super("The 8 Puzzle Game");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());*/
 
         this.pcs = new PropertyChangeSupport(this);
+        this.vcs = new VetoableChangeSupport(this);
         
         // Initialize the tiles array and controller
         tiles = new EightTile[9];
         controller = new EightController(9);
+        vcs.addVetoableChangeListener(controller);
 
         // Create the main panel to hold the tiles in a 3x3 grid layout
         JPanel tilePanel = new JPanel();
@@ -66,26 +77,20 @@ public class EightBoard extends JFrame {
 
         // Initialize the RESTART button
         restartButton = new JButton("RESTART");
-        restartButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                initializeBoard();
-            }
+        restartButton.addActionListener((ActionEvent e) -> {
+            initializeBoard();
         });
 
         // Initialize the FLIP button
         flipButton = new JButton("FLIP");
-        flipButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                flipBoard();
-            }
+        flipButton.addActionListener((ActionEvent e) -> {
+            flipBoard();
         });
 
-        // Add components to the control panel
+        // Add components to the control panel as required
+        controlPanel.add(controller);
         controlPanel.add(restartButton);
         controlPanel.add(flipButton);
-        controlPanel.add(controller); // Add the controller as a label
 
         // Add the control panel to the bottom of the frame
         this.add(controlPanel, BorderLayout.SOUTH);
@@ -117,22 +122,23 @@ public class EightBoard extends JFrame {
         pcs.firePropertyChange("restartHole", null, newHolePosition);
     }
 
-    // Method to flip the board (e.g., vertically)
+    // Method to flip the board (see documentation)
     private void flipBoard() {
-        // Simple flip logic: reverse the order of the tiles
-        List<Integer> flippedLabels = new ArrayList<>();
-        for (EightTile tile : tiles) {
-            flippedLabels.add(Integer.valueOf(tile.getLabel()));
-        }
-        Collections.reverse(flippedLabels);
+        try {
+            // Check if flipping is allowed by firing a vetoable change event
+            vcs.fireVetoableChange("flip", null, null);
 
-        // Update each tile's label with the flipped configuration
-        for (int i = 0; i < tiles.length; i++) {
-            tiles[i].setLabel(flippedLabels.get(i)); //here PropertyVetoException is never thrown
-        }
+            // If allowed, switch the labels of tiles in position 1 and 2
+            int label1 = Integer.parseInt(tiles[0].getLabel());
+            int label2 = Integer.parseInt(tiles[1].getLabel());
 
-        // Update the controller's internal state to match the new configuration
-        controller.restart(flippedLabels.indexOf(9) + 1);
+            // Fire a property change event to swap the labels
+            pcs.firePropertyChange("flip", label1, label2);
+        }
+        catch (PropertyVetoException e) {
+            // Flip not allowed
+            //System.out.println(e.getMessage());
+        }
     }
     
     private void setAdjacencies() {
