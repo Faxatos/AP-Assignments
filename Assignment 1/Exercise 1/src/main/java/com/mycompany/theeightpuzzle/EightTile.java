@@ -77,12 +77,7 @@ public class EightTile extends JButton implements PropertyChangeListener{
     }
 
     public void setLabel(int newLabel){
-        //int oldLabel = this.label;
-        
         this.label = newLabel;
-        
-        // Notify listeners about the change // TODO: check if necessary
-        //pcs.firePropertyChange("label", oldLabel, newLabel);
 
         // Update the visual appearance of the tile
         updateAppearance();
@@ -119,11 +114,11 @@ public class EightTile extends JButton implements PropertyChangeListener{
             
              // Check if the move is legal
             vcs.fireVetoableChange("moveCheck", oldLabel, HOLE_LABEL);
-            this.label = HOLE_LABEL;
-            // If it is, fire a property change event to notify listeners (adjacent tiles) to update the hole
+            // If it is, update the clicked tile
+            setLabel(HOLE_LABEL);
+            // And fire a property change event to notify listeners (adjacent tiles) to update the hole
             pcs.firePropertyChange("labelChange", oldLabel, HOLE_LABEL);
 
-            // And update the appearance of the clicked tile
             updateAppearance();
         } catch (PropertyVetoException e) { // If the move is vetoed (illegal move)
             flashRed(); //flash the tile
@@ -134,10 +129,15 @@ public class EightTile extends JButton implements PropertyChangeListener{
     
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if ("labelChange".equals(evt.getPropertyName()) && label == HOLE_LABEL) {
+        if (label == HOLE_LABEL && "labelChange".equals(evt.getPropertyName())) {
             int newLabel = (int) evt.getOldValue();
             //System.out.println("changing lable for " + newLabel); //DEBUG print
             setLabel(newLabel);
+        }
+        else if ("restart".equals(evt.getPropertyName())){
+            List<Integer> randomLabels = (List<Integer>) evt.getNewValue();
+            // Update the label based on the tile's position
+            setLabel(randomLabels.get(position - 1));
         }
     }
     

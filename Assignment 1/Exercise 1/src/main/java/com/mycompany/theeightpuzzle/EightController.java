@@ -9,7 +9,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author Faxy
  */
-public class EightController extends JLabel implements VetoableChangeListener{
+public class EightController extends JLabel implements VetoableChangeListener, PropertyChangeListener{
     // Internal state tracking the current position of the hole
     private int holePosition;
 
@@ -47,6 +47,14 @@ public class EightController extends JLabel implements VetoableChangeListener{
             // If the move is valid set text to "OK"
             setText("OK");
             holePosition = tile.getPosition(); // The hole moves to the tile's position
+        }
+    }
+    
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if ("restartHole".equals(evt.getPropertyName())) {
+            this.holePosition = (int) evt.getNewValue();
+            setText("START");
         }
     }
     

@@ -9,6 +9,7 @@ import java.awt.FlowLayout;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeSupport;
 
 import java.util.Collections;
 import java.util.ArrayList;
@@ -25,11 +26,15 @@ public class EightBoard extends JFrame {
     private final JButton restartButton;
     private final JButton flipButton;
     
+    private final PropertyChangeSupport pcs;
+    
     public EightBoard() {
         super("The 8 Puzzle Game");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
+        this.pcs = new PropertyChangeSupport(this);
+        
         // Initialize the tiles array and controller
         tiles = new EightTile[9];
         controller = new EightController(9);
@@ -42,14 +47,14 @@ public class EightBoard extends JFrame {
         for (int i = 0; i < 9; i++) {
             tiles[i] = new EightTile(i + 1, i + 1); // Position and initial label are the same
             tiles[i].addVetoableChangeListener(controller); // Register controller as VetoableChangeListener
-            //tiles[i].addPropertyChangeListener("restart", evt -> initializeBoard()); // Register tiles as listeners to the Restart event
+            pcs.addPropertyChangeListener(tiles[i]); // Register tiles as listeners to the Restart event
             tilePanel.add(tiles[i]);
         }
         
          // Register controller as listener to the Restart event
-        controller.addPropertyChangeListener("restart", evt -> initializeBoard());
+        pcs.addPropertyChangeListener(controller);
         
-        // Set adjacent tiles
+        // Set PropertyChangeListener for adjacent tiles
         setAdjacencies();
 
         // Add the tile panel to the center of the frame
@@ -102,13 +107,14 @@ public class EightBoard extends JFrame {
         }
         Collections.shuffle(randomLabels);
 
-        // Update each tile's label with the new random configuration
-        for (int i = 0; i < tiles.length; i++) {
-            tiles[i].setLabel(randomLabels.get(i)); //here PropertyVetoException is never thrown
-        }
+        // Fire the restart update event to notify the tiles
+        pcs.firePropertyChange("restart", null, randomLabels);
+        
+        // Calculate the new hole position
+        int newHolePosition = randomLabels.indexOf(9) + 1;
 
-        // Update the controller's internal state to match the new configuration
-        controller.restart(randomLabels.indexOf(9) + 1);
+        // Fire the holePosition update event to notify the controller
+        pcs.firePropertyChange("restartHole", null, newHolePosition);
     }
 
     // Method to flip the board (e.g., vertically)
@@ -130,7 +136,7 @@ public class EightBoard extends JFrame {
     }
     
     private void setAdjacencies() {
-        // Define adjacency based on the 3x3 grid
+        // Defining adjacency based on the 3x3 grid
         tiles[0].setAdjacentTiles(Arrays.asList(tiles[1], tiles[3]));     // Tile 1
         tiles[1].setAdjacentTiles(Arrays.asList(tiles[0], tiles[2], tiles[4])); // Tile 2
         tiles[2].setAdjacentTiles(Arrays.asList(tiles[1], tiles[5]));     // Tile 3
@@ -142,7 +148,7 @@ public class EightBoard extends JFrame {
         tiles[8].setAdjacentTiles(Arrays.asList(tiles[5], tiles[7]));     // Tile 9
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) { // main here for execution purposes
         new EightBoard();
     }
 }
