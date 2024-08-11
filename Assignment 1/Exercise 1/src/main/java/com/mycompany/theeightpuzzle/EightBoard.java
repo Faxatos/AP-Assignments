@@ -91,20 +91,25 @@ public class EightBoard extends javax.swing.JFrame {
         Flip = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("The 8 puzzle");
 
         eightTile1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
+        eightTile1.setText("");
         eightTile1.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
         eightTile1.setLabel("1");
 
         eightTile2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
+        eightTile2.setText("");
         eightTile2.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
         eightTile2.setLabel("2");
 
         eightTile3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
+        eightTile3.setText("");
         eightTile3.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
         eightTile3.setLabel("3");
 
         eightTile4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
+        eightTile4.setText("");
         eightTile4.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
         eightTile4.setLabel("4");
 
