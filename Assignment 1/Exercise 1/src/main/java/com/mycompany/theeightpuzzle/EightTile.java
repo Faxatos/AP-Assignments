@@ -12,7 +12,6 @@ import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeSupport;
 import java.beans.VetoableChangeListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,17 +30,20 @@ public class EightTile extends JButton implements PropertyChangeListener{
     private final PropertyChangeSupport pcs;
     private final VetoableChangeSupport vcs;
     
-    // List of adjacent tiles
-    private List<EightTile> adjacentTiles = new ArrayList<>();
-    
     /**
      * Default constructor for EightTile.
      */
     public EightTile() {
         super();
         this.position = -1;
-        this.pcs = null;
-        this.vcs = null;
+        this.label = -1;
+        
+        // Initialize property and vetoable change support
+        this.pcs = new PropertyChangeSupport(this);
+        this.vcs = new VetoableChangeSupport(this);
+        
+        // Add a click listener
+        this.addActionListener(e -> handleClick());
     }
     
     /** 
@@ -153,7 +155,6 @@ public class EightTile extends JButton implements PropertyChangeListener{
     
     // Subscribe adjacent tiles to listen for property changes
     public void setAdjacentTiles(List<EightTile> adjacentTiles) {
-        this.adjacentTiles = adjacentTiles;
         for (EightTile tile : adjacentTiles) {
             this.addPropertyChangeListener(tile::propertyChange);
         }
