@@ -1,6 +1,5 @@
 package com.mycompany.theeightpuzzle;
 
-import javax.swing.JButton;
 import javax.swing.Timer;
 
 import java.awt.Color;
@@ -15,10 +14,11 @@ import java.beans.VetoableChangeListener;
 import java.util.List;
 
 /**
- *
+ * Implementation (extending JButton) of a tile in the Eight Puzzle game.
+ * 
  * @author Faxy
  */
-public class EightTile extends JButton implements PropertyChangeListener{
+public class EightTile extends javax.swing.JButton implements PropertyChangeListener{
     
     // Private properties for Position and Label
     private final int position; // Constant value set at startup
@@ -32,6 +32,8 @@ public class EightTile extends JButton implements PropertyChangeListener{
     
     /**
      * Default constructor for EightTile.
+     * 
+     * Initializes the tile with default values for properties of the class.
      */
     public EightTile() {
         super();
@@ -47,9 +49,14 @@ public class EightTile extends JButton implements PropertyChangeListener{
     }
     
     /** 
-     * Constructor
-     * @param position
-     * @param label
+     * Constructor with position and label.
+     * 
+     * Initializes the tile with a specific position and label.
+     * 
+     * @param position The position of the tile in the puzzle.
+     * @param label The label value displayed on the tile.
+     * 
+     * @throws IllegalArgumentException If the position or label are not valid values.
      */
     public EightTile(int position, int label) {
         if(!isValid(position) || !isValid(label)) // Parameters validity check
@@ -69,7 +76,7 @@ public class EightTile extends JButton implements PropertyChangeListener{
         updateAppearance();
     }
     
-    // Getter for Position (constant)
+    // Getter for Position
     public int getPosition() {
         return position;
     }
@@ -87,7 +94,7 @@ public class EightTile extends JButton implements PropertyChangeListener{
         updateAppearance();
     }
     
-    // Add property change listener
+    // Add a property change listener
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         if(this.pcs != null){
@@ -103,25 +110,38 @@ public class EightTile extends JButton implements PropertyChangeListener{
         }
     }
     
-    // Method to update the appearance of the tile
+    /**
+     * Updates the appearance of the tile.
+     * 
+     * Sets the text and background color of the tile based on its label and position:
+     * the background color of a tile must be grey if the Label is 9,
+     * green if position == label (and they are different from 9), and yellow otherwise.
+     */
     private void updateAppearance() {
         // Set the text based on the label
-        setText(label == HOLE_LABEL ? "" : String.valueOf(label));
+        setText(this.label == HOLE_LABEL ? "" : String.valueOf(this.label));
         // Set the color based on label and position
-        setBackground(label == HOLE_LABEL ? Color.GRAY : (label == position ? Color.GREEN : Color.YELLOW));
+        setBackground(this.label == HOLE_LABEL ? Color.GRAY : (this.label == this.position ? Color.GREEN : Color.YELLOW));
     }
     
-    // Method to handle the tile click event
+    /**
+     * Handles the tile click event.
+     * 
+     * Manages the behavior when the tile is clicked, 
+     * including validating the move and updating the hole if the move is valid.
+     * 
+     * @throws PropertyVetoException If the move is vetoed by the controller.
+     */
     public void handleClick() {
         try {
             int oldLabel = this.label;
             
              // Check if the move is legal
-            vcs.fireVetoableChange("moveCheck", oldLabel, HOLE_LABEL);
+            this.vcs.fireVetoableChange("moveCheck", oldLabel, HOLE_LABEL);
             // If it is, update the clicked tile
             setLabel(HOLE_LABEL);
             // And fire a property change event to notify listeners (adjacent tiles) to update the hole
-            pcs.firePropertyChange("labelChange", oldLabel, HOLE_LABEL);
+            this.pcs.firePropertyChange("labelChange", oldLabel, HOLE_LABEL);
 
             updateAppearance();
         } catch (PropertyVetoException e) { // If the move is vetoed (illegal move)
@@ -130,6 +150,13 @@ public class EightTile extends JButton implements PropertyChangeListener{
         }
     }
     
+    /**
+     * Property change event handler.
+     * 
+     * Responds to property changes from other tiles or game components.
+     * 
+     * @param evt The PropertyChangeEvent containing event details.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (this.label == HOLE_LABEL && "labelChange".equals(evt.getPropertyName())) {
@@ -153,14 +180,25 @@ public class EightTile extends JButton implements PropertyChangeListener{
         }
     }
     
-    // Subscribe adjacent tiles to listen for property changes
+    /**
+     * Sets adjacent tiles for listening to property changes.
+     * 
+     * Subscribes adjacent tiles to listen for firePropertyChange events.
+     * Only adjacent tiles are subscribed since the "labelChange" can only affect adjacent tiles.
+     * 
+     * @param adjacentTiles A list of adjacent EightTile objects.
+     */
     public void setAdjacentTiles(List<EightTile> adjacentTiles) {
         for (EightTile tile : adjacentTiles) {
             this.addPropertyChangeListener(tile::propertyChange);
         }
     }
     
-    // Flash the tile red for half a second if move is vetoed
+    /**
+     * Flashes the tile red when a move is vetoed.
+     * 
+     * Temporarily changes the tile's background color to red for half a second.
+     */
     private void flashRed() {
         Color originalColor = getBackground();
         setBackground(Color.RED);
@@ -169,17 +207,16 @@ public class EightTile extends JButton implements PropertyChangeListener{
         timer.start();
     }
     
-    // Method to support the "restart" action, setting the label to an initial value
-    public void restart(int initialLabel) {
-        setLabel(initialLabel);
-        /*try {
-            setLabel(initialLabel);
-        } catch (PropertyVetoException e) {
-            // Handle if restart logic needs to be adjusted
-        }*/
-    }
-    
-    // Util for position and label validity
+    /**
+     * Validates the position or label value - static function.
+     * 
+     * Checks if the given value is within the valid range for a tile.
+     * 
+     * @param val The value to validate.
+     * 
+     * @return True if the value is valid.
+     * @return Dalse if the value is not valid.
+     */
     private static boolean isValid(int val) {
         return val > 0 && val <= 9;
     }

@@ -8,8 +8,15 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 /**
- *
+ * Represents the graphical user interface for the Eight Puzzle game.
+ * 
+ * This class extends JFrame and manages the display of the game board. 
+ * It initializes and manages the {@link EightTile} instances for each tile and uses 
+ * {@link EightController} to check the validity of the moves. 
+ * The board includes controls for starting a new game ("Restart") and flipping the board ("Flip").
+ * 
  * @author Faxy
  */
 public class EightBoard extends javax.swing.JFrame {
@@ -20,7 +27,10 @@ public class EightBoard extends javax.swing.JFrame {
     private final VetoableChangeSupport vcs;
     
     /**
-     * Creates new form EightBoard
+     * Creates a new EightBoard instance.
+     * 
+     * Initializes the components, sets up tile references, registers listeners,
+     * and configures the board with a random tile arrangement.
      */
     public EightBoard() {
         this.pcs = new PropertyChangeSupport(this);
@@ -30,7 +40,7 @@ public class EightBoard extends javax.swing.JFrame {
         initComponents();
         
         // Initialize the tiles array
-        tiles = new EightTile[9];
+        this.tiles = new EightTile[9];
         this.tiles[0] = eightTile1;
         this.tiles[1] = eightTile2;
         this.tiles[2] = eightTile3;
@@ -43,14 +53,14 @@ public class EightBoard extends javax.swing.JFrame {
         
         for (EightTile tile : tiles) {
             tile.addVetoableChangeListener(eightController1); // Register controller as VetoableChangeListener for move vetos
-            pcs.addPropertyChangeListener(tile); // Register tiles as listeners to the Restart event
+            this.pcs.addPropertyChangeListener(tile); // Register tiles as listeners to the Restart event
         }
         
         // Register controller as VetoableChangeListener for Flip vetos
-        vcs.addVetoableChangeListener(eightController1);
+        this.vcs.addVetoableChangeListener(eightController1);
         
         // Register controller as listener to the Restart event
-        pcs.addPropertyChangeListener(eightController1);
+        this.pcs.addPropertyChangeListener(eightController1);
         
         // Set PropertyChangeListener for adjacent tiles
         setAdjacencies();
@@ -173,10 +183,10 @@ public class EightBoard extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(eightTile1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(eightTile2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(eightTile3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(eightTile3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(eightTile1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(eightTile6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -207,7 +217,9 @@ public class EightBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_FlipActionPerformed
 
     /**
-     * @param args the command line arguments
+     * Main method to launch the EightBoard application.
+     * 
+     * @param args Command line arguments.
      */
     public static void main(String args[]) {
         
@@ -231,6 +243,11 @@ public class EightBoard extends javax.swing.JFrame {
         });
     }
     
+    /**
+     * Initializes the board with a random configuration of tiles.
+     * 
+     * Shuffles the tile labels and updates the tiles and controller with the new arrangement.
+     */
     private void initializeBoard() {
         // Generate a random permutation of [1, 9]
         List<Integer> randomLabels = new ArrayList<>();
@@ -249,7 +266,13 @@ public class EightBoard extends javax.swing.JFrame {
         pcs.firePropertyChange("restartHole", null, newHolePosition);
     }
 
-    // Method to flip the board (see report)
+    /**
+     * Attempts to flip the board by swapping the labels of tiles in positions 1 and 2.
+     * 
+     * Checks if flipping is allowed, and if so, performs the flip and notifies the tiles of the change.
+     * 
+     * @throws PropertyVetoException If the flip is not allowed based on the current tiles position.
+     */
     private void flipBoard() {
         try {
             // Check if flipping is allowed by firing a vetoable change event
@@ -268,8 +291,13 @@ public class EightBoard extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Sets the adjacent tiles for each tile based on their positions on a 3x3 grid.
+     * 
+     * Defines which tiles are adjacent to each tile, allowing them to interact appropriately.
+     * Adjacent tiles will be subscribed to listen for firePropertyChange events.
+     */
     private void setAdjacencies() {
-        // Defining adjacency based on the 3x3 grid
         tiles[0].setAdjacentTiles(Arrays.asList(tiles[1], tiles[3]));     // Tile 1
         tiles[1].setAdjacentTiles(Arrays.asList(tiles[0], tiles[2], tiles[4])); // Tile 2
         tiles[2].setAdjacentTiles(Arrays.asList(tiles[1], tiles[5]));     // Tile 3

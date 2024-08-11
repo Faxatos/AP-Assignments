@@ -1,30 +1,50 @@
 package com.mycompany.theeightpuzzle;
 
-import javax.swing.JLabel;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.PropertyChangeListener;
+
 /**
- *
+ * Controller (extends JLabel) for managing and validating moves and flips in the Eight Puzzle game.
+ * 
  * @author Faxy
  */
-public class EightController extends JLabel implements VetoableChangeListener, PropertyChangeListener{
+public class EightController extends javax.swing.JLabel implements VetoableChangeListener, PropertyChangeListener{
     // Internal state tracking the current position of the hole
     private int holePosition;
 
-    // Default constructor
+    /**
+     * Default constructor for EightController.
+     * 
+     * Initializes the controller with default text "START".
+     */
     public EightController (){
         super("START");
     }
     
-    // Constructor to initialize the controller with the initial hole position
+    /**
+     * Constructor with initial hole position.
+     * 
+     * Initializes the controller with a specific initial hole position.
+     * 
+     * @param initialHolePosition The initial position of the hole.
+     */
     public EightController(int initialHolePosition) {
         super("START");
         this.holePosition = initialHolePosition;
     }
 
+    /**
+     * Handles vetoable property changes.
+     * 
+     * Validates moves and flips according to the game rules (see report), 
+     * and updates the controller's text accordingly.
+     * 
+     * @param evt The PropertyChangeEvent containing details about the event.
+     * 
+     * @throws PropertyVetoException If the move or flip is not allowed based on the game rules.
+     */
     @Override
     public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
         if ("moveCheck".equals(evt.getPropertyName())) {
@@ -47,10 +67,10 @@ public class EightController extends JLabel implements VetoableChangeListener, P
 
             // If the move is valid set text to "OK"
             setText("OK");
-            holePosition = tile.getPosition(); // The hole moves to the tile's position
+            this.holePosition = tile.getPosition(); // The hole moves to the tile's position
         }
         if ("flip".equals(evt.getPropertyName())) {
-            if (holePosition != 9) {
+            if (this.holePosition != 9) {
                 setText("NOT ALLOWED");
                 throw new PropertyVetoException("Flip not allowed unless hole is in position 9.", evt);
             }
@@ -58,6 +78,13 @@ public class EightController extends JLabel implements VetoableChangeListener, P
         }
     }
     
+    /**
+     * Handles property change events.
+     * 
+     * Responds to the holePosition update event, labelled as "restartHole".
+     * 
+     * @param evt The PropertyChangeEvent containing details about the change.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("restartHole".equals(evt.getPropertyName())) {
@@ -66,13 +93,21 @@ public class EightController extends JLabel implements VetoableChangeListener, P
         }
     }
     
-    // Method to check if a given position is adjacent to the hole
+    /**
+     * Checks if a given position is adjacent to the hole.
+     * 
+     * Determines if the specified tile position is adjacent to the current hole position
+     * based on a 3x3 grid representation of the puzzle.
+     *   Positions: 1 2 3
+     *              4 5 6
+     *              7 8 9
+     * 
+     * @param tilePosition The position of the tile to check.
+     * 
+     * @retval boolean True if the tile is adjacent to the hole, false otherwise.
+     */
     private boolean isAdjacentToHole(int tilePosition) {
-        // Assuming the board is represented as a 3x3 grid:
-        // Positions: 1 2 3
-        //            4 5 6
-        //            7 8 9
-        return switch (holePosition) {
+        return switch (this.holePosition) {
             case 1 -> tilePosition == 2 || tilePosition == 4;
             case 2 -> tilePosition == 1 || tilePosition == 3 || tilePosition == 5;
             case 3 -> tilePosition == 2 || tilePosition == 6;
@@ -84,11 +119,5 @@ public class EightController extends JLabel implements VetoableChangeListener, P
             case 9 -> tilePosition == 6 || tilePosition == 8;
             default -> false;
         };
-    }
-    
-    // Method to reset the controller's state when the game is restarted
-    public void restart(int initialHolePosition) {
-        this.holePosition = initialHolePosition;
-        setText("START");
     }
 }
