@@ -20,9 +20,10 @@ import java.util.List;
  * @author Faxy
  */
 public class EightBoard extends javax.swing.JFrame {
-
+    // Array containing the tiles
     private final EightTile[] tiles;
     
+    // Support for bound and constrained properties
     private final PropertyChangeSupport pcs;
     private final VetoableChangeSupport vcs;
     
@@ -53,7 +54,7 @@ public class EightBoard extends javax.swing.JFrame {
         
         for (EightTile tile : tiles) {
             tile.addVetoableChangeListener(eightController1); // Register controller as VetoableChangeListener for move vetos
-            this.pcs.addPropertyChangeListener(tile); // Register tiles as listeners to the Restart event
+            this.pcs.addPropertyChangeListener(tile); // Register tiles as listeners to the Restart and Flip event
         }
         
         // Register controller as VetoableChangeListener for Flip vetos
@@ -77,12 +78,12 @@ public class EightBoard extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     private void initComponents() {//GEN-BEGIN:initComponents
 
-        eightTile1 = new com.mycompany.theeightpuzzle.EightTile(1, 1);
-        eightTile2 = new com.mycompany.theeightpuzzle.EightTile(2, 2);
+        eightTile1 = new com.mycompany.theeightpuzzle.EightTile(1, 0);
+        eightTile2 = new com.mycompany.theeightpuzzle.EightTile(2, 0);
         eightTile3 = new com.mycompany.theeightpuzzle.EightTile(3, 3);
-        eightTile4 = new com.mycompany.theeightpuzzle.EightTile(4, 4);
-        eightTile5 = new com.mycompany.theeightpuzzle.EightTile(5, 5);
-        eightTile6 = new com.mycompany.theeightpuzzle.EightTile(6, 6);
+        eightTile4 = new com.mycompany.theeightpuzzle.EightTile(4, 0);
+        eightTile5 = new com.mycompany.theeightpuzzle.EightTile(5, 0);
+        eightTile6 = new com.mycompany.theeightpuzzle.EightTile(6, 0);
         eightTile7 = new com.mycompany.theeightpuzzle.EightTile(7, 7);
         eightTile8 = new com.mycompany.theeightpuzzle.EightTile(8, 8);
         eightTile9 = new com.mycompany.theeightpuzzle.EightTile(9, 9);

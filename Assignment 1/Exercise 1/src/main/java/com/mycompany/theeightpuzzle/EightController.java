@@ -48,17 +48,18 @@ public class EightController extends javax.swing.JLabel implements VetoableChang
     @Override
     public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
         if ("moveCheck".equals(evt.getPropertyName())) {
-            EightTile tile = (EightTile) evt.getSource();
             int oldLabel = (int) evt.getOldValue();
+            int newLabel = (int) evt.getOldValue(); // always HOLE_LABEL = 9
 
             //System.out.println("doing the veto for " + oldLabel);  //DEBUG print
             
             // If the tile is the current hole, veto the change
-            if (oldLabel == 9) {
+            if (oldLabel == newLabel) {
                 setText("KO");
                 throw new PropertyVetoException("Tile is the hole", evt);
             }
 
+            EightTile tile = (EightTile) evt.getSource();
             // If the tile is not adjacent to the hole, veto the change
             if (!isAdjacentToHole(tile.getPosition())) {
                 setText("KO");
@@ -104,7 +105,8 @@ public class EightController extends javax.swing.JLabel implements VetoableChang
      * 
      * @param tilePosition The position of the tile to check.
      * 
-     * @retval boolean True if the tile is adjacent to the hole, false otherwise.
+     * @retval True if the tile is adjacent to the hole.
+     * @retval False if the tile is not adjacent to the hole.
      */
     private boolean isAdjacentToHole(int tilePosition) {
         return switch (this.holePosition) {

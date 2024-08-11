@@ -19,7 +19,6 @@ import java.util.List;
  * @author Faxy
  */
 public class EightTile extends javax.swing.JButton implements PropertyChangeListener{
-    
     // Private properties for Position and Label
     private final int position; // Constant value set at startup
     private int label;          // Current label of the tile
@@ -76,17 +75,24 @@ public class EightTile extends javax.swing.JButton implements PropertyChangeList
         updateAppearance();
     }
     
-    // Getter for Position
+    /**
+     * Getter for position.
+     */
     public int getPosition() {
         return position;
     }
 
-    // Getter and setter for Label
+    /** 
+     * Getter for label.
+     */
     @Override
     public String getLabel() {
         return String.valueOf(label);
     }
 
+    /** 
+     * Setter for label.
+     */
     public void setLabel(int newLabel){
         this.label = newLabel;
 
@@ -94,7 +100,9 @@ public class EightTile extends javax.swing.JButton implements PropertyChangeList
         updateAppearance();
     }
     
-    // Add a property change listener
+    /** 
+     * Add a property change listener.
+     */
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         if(this.pcs != null){
@@ -102,7 +110,9 @@ public class EightTile extends javax.swing.JButton implements PropertyChangeList
         }
     }
 
-    // Add vetoable change listener
+    /** 
+     * Add vetoable change listener.
+     */
     @Override
     public void addVetoableChangeListener(VetoableChangeListener listener) {
         if(this.pcs != null){
@@ -129,8 +139,6 @@ public class EightTile extends javax.swing.JButton implements PropertyChangeList
      * 
      * Manages the behavior when the tile is clicked, 
      * including validating the move and updating the hole if the move is valid.
-     * 
-     * @throws PropertyVetoException If the move is vetoed by the controller.
      */
     public void handleClick() {
         try {

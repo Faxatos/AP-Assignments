@@ -115,7 +115,7 @@
         <Property name="label" type="java.lang.String" value="1"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.mycompany.theeightpuzzle.EightTile(1, 1)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.mycompany.theeightpuzzle.EightTile(1, 0)"/>
       </AuxValues>
     </Component>
     <Component class="com.mycompany.theeightpuzzle.EightTile" name="eightTile2">
@@ -134,7 +134,7 @@
         <Property name="label" type="java.lang.String" value="2"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.mycompany.theeightpuzzle.EightTile(2, 2)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.mycompany.theeightpuzzle.EightTile(2, 0)"/>
       </AuxValues>
     </Component>
     <Component class="com.mycompany.theeightpuzzle.EightTile" name="eightTile3">
@@ -172,7 +172,7 @@
         <Property name="label" type="java.lang.String" value="4"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.mycompany.theeightpuzzle.EightTile(4, 4)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.mycompany.theeightpuzzle.EightTile(4, 0)"/>
       </AuxValues>
     </Component>
     <Component class="com.mycompany.theeightpuzzle.EightTile" name="eightTile5">
@@ -190,7 +190,7 @@
         <Property name="label" type="java.lang.String" value=""/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.mycompany.theeightpuzzle.EightTile(5, 5)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.mycompany.theeightpuzzle.EightTile(5, 0)"/>
       </AuxValues>
     </Component>
     <Component class="com.mycompany.theeightpuzzle.EightTile" name="eightTile6">
@@ -207,7 +207,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.mycompany.theeightpuzzle.EightTile(6, 6)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.mycompany.theeightpuzzle.EightTile(6, 0)"/>
       </AuxValues>
     </Component>
     <Component class="com.mycompany.theeightpuzzle.EightTile" name="eightTile7">
