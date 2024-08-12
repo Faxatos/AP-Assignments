@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Student>
+	<firstName type="String">Jak</firstName>
+	<surname type="String">Mar</surname>
+	<age type="int">19</age>
+</Student>
+<notXMLable />
+<Student>
+	<firstName type="String">Daxter</firstName>
+	<surname type="String">Ottsel</surname>
+	<age type="int">19</age>
+</Student>
+<Book>
+	<title type="String">The Precursor Legacy</title>
+	<author type="String">Famitsu</author>
+	<price type="double">19.99</price>
+	<stars type="double">3.9</stars>
+</Book>
