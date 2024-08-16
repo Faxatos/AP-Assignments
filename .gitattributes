@@ -1,0 +1,2 @@
+# Treat all files in the 'Assignment 1/Exercise 1/target/site/apidocs' directory as binary to exclude them from language statistics
+Assignment\ 1/Exercise\ 1/target/site/apidocs/* binary
