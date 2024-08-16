@@ -18,7 +18,7 @@ readMSet fileName = do
     let ciaoList = map ciao wordsList
     return (foldl add empty ciaoList)
 
--- | Write an MSet to a file, one element per line with its multiplicity
+-- write an MSet to a file, one element per line with its multiplicity
 writeMSet :: MSet String -> FilePath -> IO ()
 writeMSet (MS mset) fileName = do
     let linesToWrite = map (\(elem, count) -> elem ++ " - " ++ show count) mset
@@ -33,8 +33,8 @@ main :: IO ()
 main = do
     -- Load multisets from files
     m1 <- readMSet "../../aux_files/anagram.txt"
-    m2 <- readMSet "../../aux_files/anagram_s1.txt"
-    m3 <- readMSet "../../aux_files/anagram_s2.txt"
+    m2 <- readMSet "../../aux_files/anagram-s1.txt"
+    m3 <- readMSet "../../aux_files/anagram-s2.txt"
     m4 <- readMSet "../../aux_files/margana2.txt"
 
     -- debug prints
@@ -45,12 +45,14 @@ main = do
 
     -- Check and print whether m1 and m4 are not equal but have the same elements
     if not (m1 == m4) && elems m1 == elems m4
-        then putStrLn "Multisets m1 and m4 are not equal, but they have the same elements"
+        then putStrLn "i. Multisets m1 and m4 are not equal, but they have the same elements"
+        else putStrLn "i. The fact 'Multisets m1 and m4 are not equal, but they have the same elements' is not true"
 
     -- Check and print whether m1 is equal to the union of m2 and m3
     let m2UnionM3 = union m2 m3
     if m1 == m2UnionM3
-        then putStrLn "Multiset m1 is equal to the union of multisets m2 and m3"
+        then putStrLn "ii. Multiset m1 is equal to the union of multisets m2 and m3"
+        else putStrLn "ii. The fact 'Multiset m1 is equal to the union of multisets m2 and m3' is not true"
 
     -- Write m1 and m4 to output files
     writeMSet m1 "./output/anag-out.txt"

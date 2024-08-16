@@ -71,20 +71,24 @@ occs (MS mset) v = case lookup v mset of
     Just n  -> n
     Nothing -> 0
 
--- return a list containing all the elements of the MSet
+-- return a list containing all the distinct elements of the MSet
 elems :: MSet a -> [a]
-elems (MS mset) = concatMap expand mset
-  where
-    -- function to expand the MSet type to all the occurences of the element in the "bag"
-    expand (x, n) = replicate n x
+elems (MS mset) = map fst mset
 
--- check if the first MSet is a subset of the second MSet
-subeq :: Eq a => MSet a -> MSet a -> Bool
-subeq (MS mset1) (MS mset2) = all checkElem mset1
-  where
+-- check if the first MSet is a subset of the second MSet (ToDo: fix this implementation)
+-- subeq :: Eq a => MSet a -> MSet a -> Bool
+-- subeq (MS mset1) mset2 = all checkElem mset1
+--  where
     -- function to check if an element in mset1 has at least the same multiplicity in mset2
-    checkElem :: (a, Int) -> Bool
-    checkElem (x, n) = occs (MS mset2) x >= n
+    -- checkElem :: (a, Int) -> Bool
+    -- checkElem (x, n) = occs mset2 x >= n
+
+-- a more straightforward version of subeq
+subeq :: Eq a => MSet a -> MSet a -> Bool
+subeq (MS []) _ = True
+subeq (MS ((x, n):xs)) mset2
+  | occs mset2 x >= n = subeq (MS xs) mset2
+  | otherwise         = False
 
 -- return a new MSet with the union of the two input MSets
 union :: Eq a => MSet a -> MSet a -> MSet a
@@ -115,10 +119,17 @@ mapMSet f (MS mset) = MS (map (applyFunc f) mset)
     applyFunc :: (a -> b) -> (a, Int) -> (b, Int)
     applyFunc func (x, n) = (func x, n)
 
--- Check if one MSet is a subset with the same multiplicity as another MSet
-strictSubeq :: Eq a => MSet a -> MSet a -> Bool
-strictSubeq (MS mset1) (MS mset2) = all checkElem mset1
-  where
+-- Check if one MSet is a subset with the same multiplicity as another MSet (ToDo: fix this implementation)
+-- strictSubeq :: Eq a => MSet a -> MSet a -> Bool
+-- strictSubeq (MS mset1) (MS mset2) = all checkElem mset1
+  --where
     -- function to check if an element in mset1 has the same multiplicity in mset2
-    checkElem :: (a, Int) -> Bool
-    checkElem (x, n) = occs (MS mset2) x == n
+    -- checkElem :: (a, Int) -> Bool
+    -- checkElem (x, n) = occs (MS mset2) x == n
+
+  -- A more straightforward and isolated version of strictSubeq 
+strictSubeq :: Eq a => MSet a -> MSet a -> Bool
+strictSubeq (MS []) _ = True
+strictSubeq (MS ((x, n):xs)) mset2
+  | occs mset2 x == n = strictSubeq (MS xs) mset2
+  | otherwise         = False
