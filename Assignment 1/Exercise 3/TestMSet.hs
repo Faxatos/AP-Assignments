@@ -32,10 +32,10 @@ ciao = sort . map toLower
 main :: IO ()
 main = do
     -- Load multisets from files
-    m1 <- readMSet "../../aux_files/anagram.txt"
-    m2 <- readMSet "../../aux_files/anagram-s1.txt"
-    m3 <- readMSet "../../aux_files/anagram-s2.txt"
-    m4 <- readMSet "../../aux_files/margana2.txt"
+    m1 <- readMSet "../aux_files/anagram.txt"
+    m2 <- readMSet "../aux_files/anagram-s1.txt"
+    m3 <- readMSet "../aux_files/anagram-s2.txt"
+    m4 <- readMSet "../aux_files/margana2.txt"
 
     -- debug prints
     -- writeMSet m1 "./output/m1.txt"
