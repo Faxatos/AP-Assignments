@@ -59,6 +59,7 @@ add :: Eq a => MSet a -> a -> MSet a
 add (MS mset) v = MS (addHelper mset v)
   where
     -- function to add element to a multiset
+    addHelper :: Eq a => [(a, Int)] -> a -> [(a, Int)]
     addHelper [] v = [(v, 1)]
     addHelper ((x, n):xs) v
         | x == v    = (x, n+1) : xs
@@ -72,16 +73,17 @@ occs (MS mset) v = case lookup v mset of
 
 -- return a list containing all the elements of the MSet
 elems :: MSet a -> [a]
-elems (MS mset) = concatMap replicateElem mset
+elems (MS mset) = concatMap expand mset
   where
     -- function to expand the MSet type to all the occurences of the element in the "bag"
-    replicateElem (x, n) = replicate n x
+    expand (x, n) = replicate n x
 
 -- check if the first MSet is a subset of the second MSet
 subeq :: Eq a => MSet a -> MSet a -> Bool
 subeq (MS mset1) (MS mset2) = all checkElem mset1
   where
     -- function to check if an element in mset1 has at least the same multiplicity in mset2
+    checkElem :: (a, Int) -> Bool
     checkElem (x, n) = occs (MS mset2) x >= n
 
 -- return a new MSet with the union of the two input MSets
