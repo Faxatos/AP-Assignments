@@ -1,2 +1,7 @@
 # Treat all files in the 'Assignment 1/Exercise 1/target/site/apidocs' directory as binary to exclude them from language statistics
-Assignment 1/Exercise 1/target/site/apidocs/* binary
+# Assignment\ 1/Exercise\ 1/target/site/apidocs/* linguist-vendored
+
+# Removing directly html, js and css from language statistics
+*.html linguist-vendored
+*.js linguist-vendored
+*.css linguist-vendored
