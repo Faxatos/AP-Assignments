@@ -1,0 +1,1 @@
+{'fun': 'mixed_task', 'args': (5,), 'n_threads': 4, 'seq_iter': 4, 'iter': 5, 'mean': 1.0045771271998092, 'variance': 1.1715633283165745e-07}

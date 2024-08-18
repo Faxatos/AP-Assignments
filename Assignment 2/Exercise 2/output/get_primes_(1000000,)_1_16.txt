@@ -1,0 +1,1 @@
+{'fun': 'get_primes', 'args': (1000000,), 'n_threads': 1, 'seq_iter': 16, 'iter': 5, 'mean': 46.77527232979992, 'variance': 0.18225797444578348}
