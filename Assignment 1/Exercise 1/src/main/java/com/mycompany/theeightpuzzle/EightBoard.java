@@ -78,12 +78,12 @@ public class EightBoard extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     private void initComponents() {//GEN-BEGIN:initComponents
 
-        eightTile1 = new com.mycompany.theeightpuzzle.EightTile(1, 0);
-        eightTile2 = new com.mycompany.theeightpuzzle.EightTile(2, 0);
+        eightTile1 = new com.mycompany.theeightpuzzle.EightTile(1, 1);
+        eightTile2 = new com.mycompany.theeightpuzzle.EightTile(2, 2);
         eightTile3 = new com.mycompany.theeightpuzzle.EightTile(3, 3);
-        eightTile4 = new com.mycompany.theeightpuzzle.EightTile(4, 0);
-        eightTile5 = new com.mycompany.theeightpuzzle.EightTile(5, 0);
-        eightTile6 = new com.mycompany.theeightpuzzle.EightTile(6, 0);
+        eightTile4 = new com.mycompany.theeightpuzzle.EightTile(4, 4);
+        eightTile5 = new com.mycompany.theeightpuzzle.EightTile(5, 5);
+        eightTile6 = new com.mycompany.theeightpuzzle.EightTile(6, 6);
         eightTile7 = new com.mycompany.theeightpuzzle.EightTile(7, 7);
         eightTile8 = new com.mycompany.theeightpuzzle.EightTile(8, 8);
         eightTile9 = new com.mycompany.theeightpuzzle.EightTile(9, 9);
@@ -95,39 +95,39 @@ public class EightBoard extends javax.swing.JFrame {
         setTitle("The 8 puzzle");
 
         eightTile1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
-        eightTile1.setText("");
+        eightTile1.setText("1");
         eightTile1.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
-        eightTile1.setLabel("1");
 
         eightTile2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
-        eightTile2.setText("");
+        eightTile2.setText("2");
         eightTile2.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
-        eightTile2.setLabel("2");
 
         eightTile3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
-        eightTile3.setText("");
+        eightTile3.setText("3");
         eightTile3.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
-        eightTile3.setLabel("3");
 
         eightTile4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
-        eightTile4.setText("");
+        eightTile4.setText("4");
         eightTile4.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
-        eightTile4.setLabel("4");
 
         eightTile5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
+        eightTile5.setText("5");
         eightTile5.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
-        eightTile5.setLabel("");
 
         eightTile6.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
+        eightTile6.setText("6");
         eightTile6.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
 
         eightTile7.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
+        eightTile7.setText("7");
         eightTile7.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
 
         eightTile8.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
+        eightTile8.setText("8");
         eightTile8.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
 
         eightTile9.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true));
+        eightTile9.setText("9");
         eightTile9.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
 
         eightController1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

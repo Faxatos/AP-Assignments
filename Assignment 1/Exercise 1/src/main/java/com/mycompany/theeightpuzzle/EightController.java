@@ -49,7 +49,7 @@ public class EightController extends javax.swing.JLabel implements VetoableChang
     public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
         if ("moveCheck".equals(evt.getPropertyName())) {
             int oldLabel = (int) evt.getOldValue();
-            int newLabel = (int) evt.getOldValue(); // always HOLE_LABEL = 9
+            int newLabel = (int) evt.getNewValue(); // always HOLE_LABEL = 9
 
             //System.out.println("doing the veto for " + oldLabel);  //DEBUG print
             
