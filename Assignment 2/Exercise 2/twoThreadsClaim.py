@@ -117,10 +117,14 @@ def just_wait(n): # NOOP for n/10 seconds
     sleep(n * 0.1)
 
 def main():
-    test(5, grezzo, (20,))
-    test(5, get_primes, (1000000,))
-    test(5, just_wait, (2,))
-    test(5, mixed_task, (5,))
+    test(5, grezzo, (1,))
+    #test(5, grezzo, (20,))
+    #test(5, get_primes, (100,))
+    #test(5, get_primes, (20000,))
+    #test(5, get_primes, (100000,))
+    #test(5, get_primes, (1000000,))
+    #test(5, just_wait, (2,))
+    #test(5, mixed_task, (5,))
 
 if __name__ == "__main__":
     main()
@@ -133,14 +137,25 @@ if __name__ == "__main__":
 # 1. grezzo(20) -> 0.232 for 1 thread; 0.233 for 2 threads; 0.231 for 4 threads; 0.235 for 8 threads;
 #    Execution time doesn’t change much with more threads (does not scale linearly with the number of threads), 
 #    suggesting the GIL (Global Interpreter Lock) in Python limits the benefits of threading for CPU-bound tasks.
+#    This is a relatively heavy workload, so more tests are required to draw conclusions.
+#
+#    grezzo(10) -> 0.00038 for 1 thread; 0.00047 for 2 threads; 0.00073 for 4 threads; 0.00180 for 8 threads;
+#    For the lighter workload, execution time slightly increases as threads increase, though not doubling as the claim suggests. 
+#    This indicates some overhead introduced by threading as the number of threads grows.
+#
+#    grezzo(1) -> 0.00016 for 1 thread; 0.00022 for 2 threads; 0.00041 for 4 threads; 0.00084 for 8 threads;
+#    As we reduce the workload to a very small task, the claim starts to hold more truth. 
+#    The execution time roughly doubles as the number of threads increases.
 #
 # 2. get_primes(20000) -> 0.259 for 1 thread; 0.270 for 2 threads; 0.264 for 4 threads; 0.270 for 8 threads;
 #    get_primes(100000) -> 1.958 for 1 thread; 1.975 for 2 threads; 1.991 for 4 threads; 1.992 for 8 threads;
 #    get_primes(1000000) -> 46.775 for 1 thread; 47.172 for 2 threads; 47.459 for 4 threads; 47.265 for 8 threads;
-#    Increasing threads tends to increase the mean execution time slightly, but not doubling as the claim suggests.
-#    Also, compared to grezzo(n), we have higher variance, showing more swinging in execution times.
-#    This suggests that threading does not improve performance for this function, 
-#    consistent with the idea that CPU-bound tasks are limited by the GIL.
+#    As the workload grows even heavier (from 20,000 to 1 million primes), adding threads slightly increases the execution time, 
+#    but never doubles it, again showing that heavier CPU-bound tasks do not benefit from threading due to Python's GIL.
+#
+#    get_primes(100) -> 0.00074 for 1 thread; 0.00081 for 2 threads; 0.00109 for 4 threads; 0.00147 for 8 threads;
+#    In the lightweight workload, we observe a small increase in execution time as more threads are added.
+#    This implies that threading introduces some overhead without improving performance, particularly in lightweight tasks.
 #
 # 3. just_wait(2) -> 3.204 for 1 thread; 1.602 for 2 threads; 0.802 for 4 threads; 0.401 for 8 threads;
 #    Execution time roughly halves with each doubling of threads, 
@@ -152,6 +167,11 @@ if __name__ == "__main__":
 #    so it's consistent with the idea that I/O-bound tasks benefit from parallel execution.
 #
 # Overall, I/O-bound tasks can benefit from parallel execution, while CPU-bound tasks are limited by the GIL.
-# Even if the CPU-bound tasks tends to slightly increase the mean execution time when the number of threads is increased,
-# two threads don't take twice as long as running the function twice on a single thread (in this machine),
-# so the claim is not supported by these results.
+# For heavier CPU-bound workloads, adding threads may slightly increase execution time due to overhead, 
+# but it doesn't result in the doubling effect suggested by the claim. 
+# However, in cases with very lightweight tasks (like grezzo(1)), the claim holds more truth, 
+# as the overhead introduced by threading is more noticeable.
+#
+# Based on the test results, a more accurate claim would be: 
+# "For very light workloads, two threads calling a function may take close to twice as much time as a single thread 
+#  calling the function twice, but as the workload increases, the additional execution time becomes negligible."
