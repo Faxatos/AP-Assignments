@@ -3,7 +3,8 @@ package com.mycompany.xmlserializer;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,12 +16,13 @@ import java.util.Map;
 public class XMLSerializer {
     
     // Cache to store class metadata to avoid introspection multiple times
-    private static final Map<Class<?>, Field[]> classFieldCache = new HashMap<>();
+    private static final Map<Class<?>, List<CustomField>> classFieldCache = new HashMap<>();
 
     /**
      * Static method to serialize an array of Objects.
      * 
-     * It checks
+     * It checks if each object is annotated with @XMLable and retrieves fields annotated with @XMLfield to generate XML.
+     * Introspection is performed only once per class.
      * 
      * @param arr array of objects to be serialized
      * @param fileName path of output file
@@ -34,38 +36,46 @@ public class XMLSerializer {
         for (Object obj : arr) {
             Class<?> objClass = obj.getClass();
             
-            // Check if the class is marked with @XMLable
-            
             //System.out.println(Arrays.toString(objClass.getAnnotations())); //DEBUG print
             
+            // Check if the class is marked with @XMLable
             if (objClass.isAnnotationPresent(XMLable.class)) {
                 xmlContent.append("<").append(objClass.getSimpleName()).append(">\n");
 
                 // Get the cached fields or introspect the class if it's not cached yet
-                Field[] fields = classFieldCache.computeIfAbsent(objClass, clazz -> clazz.getDeclaredFields());
                 // History time: clazz has been used in Java in place of the reserved word "class" since JDK 1.0!
-                
-                // Iterate through fields and serialize the ones with @XMLfield annotation
-                for (Field field : fields) {
-                    if (field.isAnnotationPresent(XMLfield.class)) {
-                        XMLfield xmlField = field.getAnnotation(XMLfield.class);
-                        // check if optional name has been used
-                        String tagName = xmlField.name().isEmpty() ? field.getName() : xmlField.name();
-                        String type = xmlField.type();
-                        
-                        field.setAccessible(true);
-                        try {
-                            Object value = field.get(obj);
-                            xmlContent.append("\t<").append(tagName)
-                                      .append(" type=\"").append(type).append("\">")
-                                      .append(value)
-                                      .append("</").append(tagName).append(">\n");
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
+                List<CustomField> customFields = classFieldCache.computeIfAbsent(objClass, clazz -> {
+                    List<CustomField> pairs = new ArrayList<>();
+                    Field[] fields = clazz.getDeclaredFields();
+                    
+                    for (Field field : fields) {
+                        if (field.isAnnotationPresent(XMLfield.class)) {
+                            XMLfield xmlField = field.getAnnotation(XMLfield.class);
+                            // check if optional name has been used
+                            String xmlName  = xmlField.name().isEmpty() ? field.getName() : xmlField.name();
+                            String type = xmlField.type();
+                            pairs.add(new CustomField(field.getName(), xmlName, type));
                         }
                     }
+                    return pairs;
+                });
+                
+                // Iterate through cached field pairs and serialize them
+                for (CustomField customField : customFields) {
+                    try {
+                        // Use the actual field name to access the field with reflection
+                        Field field = objClass.getDeclaredField(customField.getName());
+                        field.setAccessible(true);
+                        Object value = field.get(obj);
+                            xmlContent.append("\t<").append(customField.getXMLName())
+                                      .append(" type=\"").append(customField.getType()).append("\">")
+                                      .append(value)
+                                      .append("</").append(customField.getXMLName()).append(">\n");
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
                 }
-
+                
                 xmlContent.append("</").append(objClass.getSimpleName()).append(">\n");
             } else {
                 xmlContent.append("<notXMLable />\n");
