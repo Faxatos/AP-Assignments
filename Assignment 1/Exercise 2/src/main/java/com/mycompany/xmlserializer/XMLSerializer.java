@@ -4,8 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,6 +17,11 @@ public class XMLSerializer {
     
     // Cache to store class metadata to avoid introspection multiple times
     private static final Map<Class<?>, List<CustomField>> classFieldCache = new HashMap<>();
+    
+    // Allowed types for serialization
+    private static final String[] ALLOWED_TYPES = {
+        "int", "long", "double", "float", "char", "boolean", "String"
+    };
 
     /**
      * Static method to serialize an array of Objects.
@@ -54,7 +59,13 @@ public class XMLSerializer {
                             // check if optional name has been used
                             String xmlName  = xmlField.name().isEmpty() ? field.getName() : xmlField.name();
                             String type = xmlField.type();
-                            pairs.add(new CustomField(field.getName(), xmlName, type));
+                            
+                            // Check if the type is allowed
+                            if (isAllowedType(type)) {
+                                pairs.add(new CustomField(field.getName(), xmlName, type));
+                            } else {
+                                System.err.println("Field " + xmlName + " with type " + type + " is not allowed for serialization.");
+                            }
                         }
                     }
                     return pairs;
@@ -89,5 +100,14 @@ public class XMLSerializer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    private static boolean isAllowedType(String type) {
+        for (String allowedType : ALLOWED_TYPES) {
+            if (allowedType.equals(type)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
