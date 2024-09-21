@@ -28,9 +28,8 @@ empty = MS []
 
 -- Eq instance for MSet using the subset method
 instance Eq a => Eq (MSet a) where
-    -- The two multisets are equal if both are "strict" subset of each other 
-    -- (meaning that the multiplicity of the elements must be the same)
-    MS mset1 == MS mset2 = strictSubeq (MS mset1) (MS mset2) && strictSubeq (MS mset2) (MS mset1)
+    -- The two multisets are equal if both are subset of each other 
+    MS mset1 == MS mset2 = subeq (MS mset1) (MS mset2) && subeq (MS mset2) (MS mset1)
 
 -- Foldable instance for MSet (using foldr to create the minimal implementation for Foldable)
 instance Foldable MSet where
@@ -75,15 +74,7 @@ occs (MS mset) v = case lookup v mset of
 elems :: MSet a -> [a]
 elems (MS mset) = map fst mset
 
--- check if the first MSet is a subset of the second MSet (ToDo: fix this implementation)
--- subeq :: Eq a => MSet a -> MSet a -> Bool
--- subeq (MS mset1) mset2 = all checkElem mset1
---  where
-    -- function to check if an element in mset1 has at least the same multiplicity in mset2
-    -- checkElem :: (a, Int) -> Bool
-    -- checkElem (x, n) = occs mset2 x >= n
-
--- a more straightforward version of subeq
+-- check if the first MSet is a subset (allowing for equal or greater multiplicity of elements) of the second MSet
 subeq :: Eq a => MSet a -> MSet a -> Bool
 subeq (MS []) _ = True
 subeq (MS ((x, n):xs)) mset2
@@ -119,17 +110,3 @@ mapMSet f (MS mset) = MS (map (applyFunc f) mset)
     applyFunc :: (a -> b) -> (a, Int) -> (b, Int)
     applyFunc func (x, n) = (func x, n)
 
--- Check if one MSet is a subset with the same multiplicity as another MSet (ToDo: fix this implementation)
--- strictSubeq :: Eq a => MSet a -> MSet a -> Bool
--- strictSubeq (MS mset1) (MS mset2) = all checkElem mset1
-  --where
-    -- function to check if an element in mset1 has the same multiplicity in mset2
-    -- checkElem :: (a, Int) -> Bool
-    -- checkElem (x, n) = occs (MS mset2) x == n
-
-  -- A more straightforward and isolated version of strictSubeq 
-strictSubeq :: Eq a => MSet a -> MSet a -> Bool
-strictSubeq (MS []) _ = True
-strictSubeq (MS ((x, n):xs)) mset2
-  | occs mset2 x == n = strictSubeq (MS xs) mset2
-  | otherwise         = False
