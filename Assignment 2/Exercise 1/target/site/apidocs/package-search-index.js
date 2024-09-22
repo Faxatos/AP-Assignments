@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.anagrams"},{"l":"com.anagrams.Strategies"},{"l":"com.framework"},{"l":"com.framework.Strategies"},{"l":"com.framework.Utils"}];updateSearchResults();
